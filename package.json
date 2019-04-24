@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "A wiki application created with NodeJS",
   "main": "src/server.js",
+  "engines": {
+    "node": "11.8.0",
+    "npm": "6.9.0"
+  },
   "scripts": {
     "test": "export NODE_ENV=test && jasmine",
     "start": "node src/server.js"
