@@ -10,8 +10,8 @@ const expressValidator = require("express-validator");
 const session = require("express-session");
 const flash = require("express-flash");
 const logger = require("morgan");
-/* Not ready for passport yet */
-//const passportConfig = require("./passport-config");
+const passportConfig = require("./passport-config");
+const sendGrid = require("../sendGrid/sendGrid.js");
 
 module.exports = {
   init(app, express) {
@@ -33,7 +33,13 @@ module.exports = {
     );
     app.use(flash());
     app.use(logger("dev"));
-    /* Not ready for passport yet */
-    //passportConfig.init(app);
+    passportConfig.init(app);
+    sendGrid.initialize();
+
+    /* Create a currentUser variable that the EJS templates can access */
+    app.use((req, res, next) => {
+      res.locals.currentUser = req.user;
+      next();
+    });
   }
 };
