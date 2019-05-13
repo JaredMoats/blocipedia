@@ -31,13 +31,23 @@ module.exports = {
       }
     });
   },
-  logUsers(req, res, next) {
-    User.findAll()
-      .then(users => {
-        console.log(users);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+  signInForm(req, res, next) {
+    res.render("users/sign-in");
+  },
+  signIn(req, res, next) {
+    passport.authenticate("local")(req, res, () => {
+      if (!req.user) {
+        req.flash("notice", "Sign in failed. Please try again.");
+        res.redirect("/users/sign-in");
+      } else {
+        req.flash("notice", "You've successfully signed in!");
+        res.redirect("/");
+      }
+    });
+  },
+  signOut(req, res, next) {
+    req.logout();
+    req.flash("notice", "You've successfully signed out!");
+    res.redirect("/");
   }
 };
