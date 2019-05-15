@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const staticController = require("../controllers/staticController");
+const wikiController = require("../controllers/wikiController");
 
-router.get("/", staticController.index);
+router.get("/", wikiController.index);
 
 module.exports = router;

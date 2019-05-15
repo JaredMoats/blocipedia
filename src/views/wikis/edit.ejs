@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ../static/partials/head.ejs %>
+</head>
+
+<body>
+  <% include ../static/partials/navbar.ejs %>
+
+  <main class="container">
+
+    <h1>Edit Wiki</h1>
+
+    <!-- #1 -->
+    <form action="/publicWikis/<%= wiki.id %>/update" method="post">
+      <div class="form-group">
+        <label for="title"></label>
+        <!-- #2 -->
+        <h1><%= wiki.title %></h1>
+        <small class="text-muted" id="titleHelp">Title must be 5 or more characters in length.</small>
+      </div>
+      <div class="form-group">
+        <label for="body">Body</label>
+        <!-- #3 -->
+        <textarea rows="4" class="form-control" name="body" placeholder="Enter Body"><%= wiki.body %></textarea>
+        <small class="text-muted" id="bodyHelp">Body must be 10 or more characters in length.</small>
+      </div>
+      <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+  </main>
+
+  <% include ../static/partials/baseScripts.ejs %>
+
+</body>
+
+</html>
