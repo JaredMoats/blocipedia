@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <% include ../static/partials/head.ejs %>
+  </head>
+  <body>
+
+    <% include ../static/partials/navbar.ejs %>
+
+    <main class="container">
+      <h1>Upgrade to Premium</h1>
+      <p>When you upgrade to premium, you can create private wikis,
+      giving you complete control over what you create. No one else
+      can touch it. It's all yours.</p>
+      <button
+        style="background-color:#6772E5;color:#FFF;padding:8px 12px;border:0;border-radius:4px;font-size:1em"
+        id="checkout-button-plan_F6U3orDhhrTmY7"
+        role="link"
+      >
+        Upgrade now
+      </button>
+
+      <div id="error-message"></div>
+    </main>
+
+    <% include ../static/partials/baseScripts.ejs %>
+    <script>
+      var stripe = Stripe('pk_test_QeoDFSwUCRyopKiJxUz6UoD800iNagiowh');
+
+      var checkoutButton = document.getElementById('checkout-button-plan_F6U3orDhhrTmY7');
+      checkoutButton.addEventListener('click', function () {
+        // When the customer clicks on the button, redirect
+        // them to Checkout.
+        stripe.redirectToCheckout({
+          items: [{plan: 'plan_F6U3orDhhrTmY7', quantity: 1}],
+
+          // Do not rely on the redirect to the successUrl for fulfilling
+          // purchases, customers may not always reach the success_url after
+          // a successful payment.
+          // Instead use one of the strategies described in
+          // https://stripe.com/docs/payments/checkout/fulfillment
+          successUrl: window.location.protocol + '//localhost:3000/users/upgrade/success',
+          cancelUrl: window.location.protocol + '//localhost:3000/users/upgrade/cancel',
+        })
+        .then(function (result) {
+          if (result.error) {
+            // If `redirectToCheckout` fails due to a browser or network
+            // error, display the localized error message to your customer.
+            var displayError = document.getElementById('error-message');
+            displayError.textContent = result.error.message;
+          }
+        });
+      });
+    </script>
+
+  </body>
+</html>

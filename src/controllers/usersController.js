@@ -1,6 +1,7 @@
 const userQueries = require("../db/queries.users.js");
 const passport = require("passport");
 const sendGrid = require("../sendGrid/sendGrid.js");
+const stripe = require("stripe")("sk_test_snbmFObPKMJH63PNPU1GIxpD00Jk4RSl0G");
 const User = require("../db/models").User;
 
 module.exports = {
@@ -49,5 +50,12 @@ module.exports = {
     req.logout();
     req.flash("notice", "You've successfully signed out!");
     res.redirect("/");
+  },
+  upgradeView(req, res, next) {
+    if (!req.user) {
+      res.render("wikis/notUser");
+    } else {
+      res.render("users/upgrade.ejs");
+    }
   }
 };
