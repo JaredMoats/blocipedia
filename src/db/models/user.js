@@ -34,11 +34,11 @@ module.exports = (sequelize, DataTypes) => {
       as: "wiki"
     });
   };
-  User.prototype.isAdmin = function() {
-    return this.role === 2;
-  };
   User.prototype.isPremium = function() {
     return this.role === 1;
+  };
+  User.prototype.isAdmin = function() {
+    return this.role === 2;
   };
   return User;
 };

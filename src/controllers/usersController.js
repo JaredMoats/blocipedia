@@ -57,5 +57,20 @@ module.exports = {
     } else {
       res.render("users/upgrade.ejs");
     }
+  },
+  upgradeSuccess(req, res, next) {
+    if (!req.user) {
+      res.render("wikis/notUser");
+    } else {
+      userQueries.upgradeUser(req.user, (error, user) => {
+        if (error || user == null) {
+          //res.redirect("/");
+          console.log("Here is your error: " + error);
+        } else {
+          console.log("Upgrade successful");
+          res.render("users/success.ejs");
+        }
+      });
+    }
   }
 };

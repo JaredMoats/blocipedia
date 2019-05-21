@@ -2,6 +2,7 @@
 <html>
   <head>
     <% include ../static/partials/head.ejs %>
+    <script src="https://js.stripe.com/v3"></script>
   </head>
   <body>
 
@@ -24,31 +25,39 @@
     </main>
 
     <% include ../static/partials/baseScripts.ejs %>
+    <script>console.log("Hello world");</script>
+
     <script>
-      var stripe = Stripe('pk_test_QeoDFSwUCRyopKiJxUz6UoD800iNagiowh');
+      document.addEventListener("DOMContentLoaded", function(event) {
+        console.log("DOM CONTENT LOADED");
+        var stripe = Stripe('pk_test_QeoDFSwUCRyopKiJxUz6UoD800iNagiowh');
 
-      var checkoutButton = document.getElementById('checkout-button-plan_F6U3orDhhrTmY7');
-      checkoutButton.addEventListener('click', function () {
-        // When the customer clicks on the button, redirect
-        // them to Checkout.
-        stripe.redirectToCheckout({
-          items: [{plan: 'plan_F6U3orDhhrTmY7', quantity: 1}],
+        var checkoutButton = document.getElementById('checkout-button-plan_F6U3orDhhrTmY7');
+        checkoutButton.addEventListener('click', function () {
+          console.log("Checking out");
+          // When the customer clicks on the button, redirect
+          // them to Checkout.
+          stripe.redirectToCheckout({
+            items: [{plan: 'plan_F6U3orDhhrTmY7', quantity: 1}],
 
-          // Do not rely on the redirect to the successUrl for fulfilling
-          // purchases, customers may not always reach the success_url after
-          // a successful payment.
-          // Instead use one of the strategies described in
-          // https://stripe.com/docs/payments/checkout/fulfillment
-          successUrl: window.location.protocol + '//localhost:3000/users/upgrade/success',
-          cancelUrl: window.location.protocol + '//localhost:3000/users/upgrade/cancel',
-        })
-        .then(function (result) {
-          if (result.error) {
-            // If `redirectToCheckout` fails due to a browser or network
-            // error, display the localized error message to your customer.
-            var displayError = document.getElementById('error-message');
-            displayError.textContent = result.error.message;
-          }
+            // Do not rely on the redirect to the successUrl for fulfilling
+            // purchases, customers may not always reach the success_url after
+            // a successful payment.
+            // Instead use one of the strategies described in
+            // https://stripe.com/docs/payments/checkout/fulfillment
+            successUrl: window.location.protocol + '//localhost:3000/users/upgrade/success',
+            cancelUrl: window.location.protocol + '//localhost:3000/users/upgrade/cancel',
+          })
+          .then(function (result) {
+            console.log("Finished redirect");
+            console.log(result);
+            if (result.error) {
+              // If `redirectToCheckout` fails due to a browser or network
+              // error, display the localized error message to your customer.
+              var displayError = document.getElementById('error-message');
+              displayError.textContent = result.error.message;
+            }
+          });
         });
       });
     </script>

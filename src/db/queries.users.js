@@ -17,5 +17,20 @@ module.exports = {
       .catch(err => {
         callback(err);
       });
+  },
+  upgradeUser(user, callback) {
+    return User.findById(user.id)
+      .then(user => {
+        if (!user) {
+          return callback("User not found");
+        } else {
+          //upgrade user to premium
+          //user.role = 1;
+          console.log("Upgrade query attempted");
+        }
+      })
+      .catch(error => {
+        callback(error);
+      });
   }
 };

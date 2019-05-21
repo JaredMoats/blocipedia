@@ -7,6 +7,7 @@ router.get("/users/sign-up", usersController.showPage);
 router.get("/users/sign-in", usersController.signInForm);
 router.get("/users/sign-out", usersController.signOut);
 router.get("/users/upgrade", usersController.upgradeView);
+router.get("/users/upgrade/success", usersController.upgradeSuccess);
 router.post(
   "/users/sign-up/create",
   validation.validateUsers,
