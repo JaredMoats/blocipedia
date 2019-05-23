@@ -10,6 +10,7 @@ router.get("/users/upgrade", usersController.upgradeView);
 router.get("/users/upgrade/success", usersController.upgradeSuccess);
 router.get("/users/downgrade", usersController.downgradeView);
 router.get("/users/downgrade/success", usersController.downgradeSuccessView);
+router.get("/users/:id/profile", usersController.showProfile);
 router.post(
   "/users/sign-up/create",
   validation.validateUsers,

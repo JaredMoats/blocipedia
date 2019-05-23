@@ -28,7 +28,10 @@ module.exports = {
       });
   },
   getAllWikis(callback) {
-    return Wiki.all()
+    return Wiki.findAll({ where: {
+          private: false
+        } 
+      })
       .then(wikis => {
         callback(null, wikis);
       })
@@ -70,6 +73,9 @@ module.exports = {
         });
       }
     });
+  },
+  massPrivateToPublic() {
+    Wiki.findAll() // find all private wikis? 
   },
   deleteWiki(req, callback) {
     return Wiki.findById(req.params.id).then(wiki => {

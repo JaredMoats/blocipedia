@@ -5,7 +5,7 @@
   </head>
   <body>
     <% include ../static/partials/navbar.ejs %>
-      <h1>Welcome to Blocipedia. All public Wikis are below.</h1>
+      <h1>Welcome, <%= currentUser.email %>. Here are the wikis you own.</h1>
       <ul class="list-group">
         <% wikis.forEach((wiki) => { %>
           <li class="list-group-item">

@@ -1,6 +1,7 @@
 const userQueries = require("../db/queries.users.js");
 const passport = require("passport");
 const sendGrid = require("../sendGrid/sendGrid.js");
+const Wiki = require("../db/models").Wiki;
 const stripe = require("stripe")("sk_test_snbmFObPKMJH63PNPU1GIxpD00Jk4RSl0G");
 const User = require("../db/models").User;
 
@@ -38,10 +39,8 @@ module.exports = {
   signIn(req, res, next) {
     passport.authenticate("local")(req, res, () => {
       if (!req.user) {
-        req.flash("notice", "Sign in failed. Please try again.");
         res.redirect("/users/sign-in");
       } else {
-        req.flash("notice", "You've successfully signed in!");
         res.redirect("/");
       }
     });
@@ -50,6 +49,20 @@ module.exports = {
     req.logout();
     req.flash("notice", "You've successfully signed out!");
     res.redirect("/");
+  },
+  showProfile(req, res, next) {
+    if(!req.user) {
+      res.render("wikis/notUser");
+    } else {
+      userQueries.getUsersWikis(req.params.id, (err, wikis) => {
+        if(err || wikis == null) {
+          console.log("This is your error: " + err);
+          res.redirect("/");
+        } else {
+          res.render("users/profile", { wikis });
+        }
+      });
+    }
   },
   upgradeView(req, res, next) {
     if (!req.user) {
@@ -84,8 +97,22 @@ module.exports = {
     }
   },
   downgradeSuccess(req, res, next) {
-    userQueries.downgradeUser(req.user);
+    //call method that switches user's role
+
+    userQueries.downgradeUser(req.user); //successfully downgrades the user
+    // Find all wikis that match this user's id and where private is true
+    Wiki.findAll({ 
+      where: { 
+        userId: req.user.id/* current user id? */,
+        private: true
+      } 
+    }).then(wikis => {
+      wikis.updateAttributes({ private: false })
+    });
     res.redirect("/users/downgrade/success");
+  },
+  downgradeAction(req, res, next) {
+      
   },
   downgradeSuccessView(req, res, next) {
     if(!req.user) {

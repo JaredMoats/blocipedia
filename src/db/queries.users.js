@@ -2,6 +2,7 @@ const User = require("./models").User;
 const bcrypt = require("bcryptjs");
 const keys = require("../config/keys");
 const stripe = require("stripe")(keys.stripeKey);
+const Wiki = require("./models").Wiki;
 
 module.exports = {
   createUser(newUser, callback) {
@@ -42,5 +43,16 @@ module.exports = {
       stripe.subscriptions.update('prod_F6U3nLKbYrB5JQ', {cancel_at_period_end: true});
       return user.updateAttributes({ role: 0 });
     })
+  },
+  getUsersWikis(id, callback) {
+    return Wiki.findAll({
+      where: {
+        userId: id
+      }
+    }).then(wikis => {
+      callback(null, wikis);
+    }).catch(err => {
+      callback(err);
+    });
   }
 };

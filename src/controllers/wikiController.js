@@ -97,6 +97,9 @@ module.exports = {
       });
     }
   },
+  makeDowngradeWikisPublic(req, res, next) {
+    wikiQueries.massPrivateToPublic();
+  },
   delete(req, res, next) {
     if (!req.user) {
       res.render("wikis/notUser");
