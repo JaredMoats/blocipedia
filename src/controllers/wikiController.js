@@ -27,6 +27,9 @@ module.exports = {
       private: false,
       userId: req.user.id
     };
+    if(req.body.private) {
+      newWiki.private = req.body.private;
+    }
     /* Pass the object to the function that creates the wiki */
     wikiQueries.createWiki(newWiki, (error, wiki) => {
       if (error) {
@@ -62,14 +65,37 @@ module.exports = {
     }
   },
   update(req, res, next) {
-    wikiQueries.updateWiki(req.params.id, req.body, (error, wiki) => {
-      if (error || wiki == null) {
-        console.log("Your error: " + error);
-        res.redirect(401, `/publicWikis/${req.params.id}/edit`);
-      } else {
-        res.redirect(`/publicWikis/${req.params.id}`);
-      }
-    });
+    if(req.body.public) {
+      let updatedPrivacy = false;
+      wikiQueries.updateWiki(req.params.id, req.body, updatedPrivacy, (error, wiki) => {
+        if(error || wiki == null) {
+          console.log("Your error: " + error);
+          res.redirect(401, `/publicWikis/${req.params.id}/edit`);
+        } else {
+          res.redirect(`/publicWikis/${req.params.id}`);
+        }
+      });
+    } else if(req.body.private) {
+      let updatedPrivacy = true;
+      wikiQueries.updateWiki(req.params.id, req.body, updatedPrivacy, (error, wiki) => {
+        if(error || wiki == null) {
+          console.log("Your error: " + error);
+          res.redirect(401, `/publicWikis/${req.params.id}/edit`);
+        } else {
+          res.redirect(`/publicWikis/${req.params.id}`);
+        }
+      });
+    } else {
+      let updatedPrivacy = null;
+      wikiQueries.updateWiki(req.params.id, req.body, updatedPrivacy, (error, wiki) => {
+        if (error || wiki == null) {
+          console.log("Your error: " + error);
+          res.redirect(401, `/publicWikis/${req.params.id}/edit`);
+        } else {
+          res.redirect(`/publicWikis/${req.params.id}`);
+        }
+      });
+    }
   },
   delete(req, res, next) {
     if (!req.user) {

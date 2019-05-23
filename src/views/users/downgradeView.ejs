@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <% include ../static/partials/head.ejs %>
+  </head>
+  <body>
+
+    <% include ../static/partials/navbar.ejs %>
+
+    <main class="container">
+      <h1>Cancel now</h1>
+      <p>
+          Are you sure you want to cancel your Premium subscription? You'll lose
+          all the sweet benefits that come with it. This also means people will 
+          be able to edit and even delete your private wikis.
+      </p>
+      <form action="/users/downgrade/action" method="POST">
+            <button class="btn btn-danger">Downgrade now</button>
+      </form>
+    </main>
+
+    <% include ../static/partials/baseScripts.ejs %>
+
+  </body>
+</html>

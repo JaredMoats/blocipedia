@@ -23,6 +23,9 @@
         <textarea rows="4" class="form-control" name="body" placeholder="Enter Post body"></textarea>
         <small class="text-muted" id="bodyHelp">Body must be 10 or more characters in length.</small>
       </div>
+      <% if(currentUser.role === 1 || currentUser.role === 2) { %>
+        <label><input name="private" type="checkbox" value="true"/>Make Wiki Private</label>
+      <% } %>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </main>

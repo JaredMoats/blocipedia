@@ -36,24 +36,39 @@ module.exports = {
         callback(error);
       });
   },
-  updateWiki(id, updatedWiki, callback) {
+  updateWiki(id, updatedWiki, updatedPrivacy, callback) {
     return Wiki.findOne({ where: { id } }).then(wiki => {
       if (!wiki) {
         return callback("Wiki not found");
       }
-
-      wiki
-        .update(updatedWiki, {
+      /* If privacy is not updated, skip updating the privacy settings. Else, include
+      privacy update */
+      if(updatedPrivacy === null ) {
+        wiki.update(updatedWiki, {
           fields: Object.keys(updatedWiki)
         })
-        .then(() => {
-          console.log("updatedWiki: " + updatedWiki);
-          console.log("wiki.body: " + wiki.body);
-          callback(null, wiki);
-        })
-        .catch(error => {
-          callback(error);
+          .then(() => {
+            callback(null, wiki);
+          })
+          .catch(error => {
+            callback(error);
+          });
+      } else {
+        wiki.updateAttributes({ private: updatedPrivacy }).then(wiki => {
+          wiki
+          .update(updatedWiki, {
+            fields: Object.keys(updatedWiki)
+          })
+          .then(() => {
+            console.log("updatedWiki: " + updatedWiki);
+            console.log("wiki.body: " + wiki.body);
+            callback(null, wiki);
+          })
+          .catch(error => {
+            callback(error);
+          });
         });
+      }
     });
   },
   deleteWiki(req, callback) {

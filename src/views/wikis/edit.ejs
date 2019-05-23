@@ -26,6 +26,11 @@
         <textarea rows="4" class="form-control" name="body" placeholder="Enter Body"><%= wiki.body %></textarea>
         <small class="text-muted" id="bodyHelp">Body must be 10 or more characters in length.</small>
       </div>
+      <% if(wiki.private && currentUser.role === 1 || wiki.private && currentUser.role === 2) { %>
+        <label><input name="public" type="checkbox" value="true"/>Make Wiki public</label>
+      <% } else if(!wiki.private && currentUser.role === 1 && currentUser.id == wiki.userId || !wiki.private && currentUser.role === 2) {%>
+        <label><input name="private" type="checkbox" value="true"/>Make wiki private</label>
+      <% } %>
       <button type="submit" class="btn btn-primary">Update</button>
     </form>
   </main>

@@ -55,22 +55,43 @@ module.exports = {
     if (!req.user) {
       res.render("wikis/notUser");
     } else {
-      res.render("users/upgrade.ejs");
+      res.render("users/upgrade");
     }
   },
   upgradeSuccess(req, res, next) {
     if (!req.user) {
       res.render("wikis/notUser");
     } else {
-      userQueries.upgradeUser(req.user, (error, user) => {
-        if (error || user == null) {
+      /*userQueries.upgradeUser(req.user, (error, user) => {
+        /*if (error || user == null) {
           //res.redirect("/");
           console.log("Here is your error: " + error);
         } else {
           console.log("Upgrade successful");
-          res.render("users/success.ejs");
-        }
-      });
+          res.render("users/success");
+        }*/
+        /*res.render("users/success");
+      });*/
+      userQueries.upgradeUser(req.user);
+      res.render("users/success");
+    }
+  },
+  downgradeView(req, res, next) {
+    if(!req.user) {
+      res.render("wikis/notUser");
+    } else {
+      res.render("users/downgradeView");
+    }
+  },
+  downgradeSuccess(req, res, next) {
+    userQueries.downgradeUser(req.user);
+    res.redirect("/users/downgrade/success");
+  },
+  downgradeSuccessView(req, res, next) {
+    if(!req.user) {
+      res.render("wikis/notUser");
+    } else {
+      res.render("users/downgradeSuccess");
     }
   }
 };
