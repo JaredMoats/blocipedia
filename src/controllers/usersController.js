@@ -75,16 +75,6 @@ module.exports = {
     if (!req.user) {
       res.render("wikis/notUser");
     } else {
-      /*userQueries.upgradeUser(req.user, (error, user) => {
-        /*if (error || user == null) {
-          //res.redirect("/");
-          console.log("Here is your error: " + error);
-        } else {
-          console.log("Upgrade successful");
-          res.render("users/success");
-        }*/
-        /*res.render("users/success");
-      });*/
       userQueries.upgradeUser(req.user);
       res.render("users/success");
     }
@@ -98,17 +88,11 @@ module.exports = {
   },
   downgradeSuccess(req, res, next) {
     //call method that switches user's role
+    //console.log(JSON.stringify(req));
 
     userQueries.downgradeUser(req.user); //successfully downgrades the user
-    // Find all wikis that match this user's id and where private is true
-    Wiki.findAll({ 
-      where: { 
-        userId: req.user.id/* current user id? */,
-        private: true
-      } 
-    }).then(wikis => {
-      wikis.updateAttributes({ private: false })
-    });
+    
+    Wiki.update({ private: false }, { where: {userId: req.user.id, private: true}  })
     res.redirect("/users/downgrade/success");
   },
   downgradeAction(req, res, next) {

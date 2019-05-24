@@ -27,8 +27,6 @@ module.exports = {
         if (!user) {
           return callback("User not found");
         } else {
-          //upgrade user to premium
-          //user.role = 1;
           console.log("Upgrade query attempted");
           return user.updateAttributes({ role: 1 });
         }
@@ -40,7 +38,7 @@ module.exports = {
   downgradeUser(user, callback) {
     return User.findById(user.id).then(user => {
       console.log("Downgrade query attempted");
-      stripe.subscriptions.update('prod_F6U3nLKbYrB5JQ', {cancel_at_period_end: true});
+      stripe.subscriptions.update('sub_F6UyteYveLaXsX', {cancel_at_period_end: true});
       return user.updateAttributes({ role: 0 });
     })
   },
