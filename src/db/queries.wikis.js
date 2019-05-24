@@ -1,4 +1,5 @@
 const Wiki = require("./models").Wiki;
+const markdown = require("markdown").markdown;
 
 module.exports = {
   createWiki(newWiki, callback) {
@@ -40,42 +41,29 @@ module.exports = {
       });
   },
   updateWiki(id, updatedWiki, updatedPrivacy, callback) {
-    return Wiki.findOne({ where: { id } }).then(wiki => {
+    console.log("updateWiki triggered");
+    if(updatedPrivacy === null) {
+      return Wiki.update({ body: updatedWiki }, { where: { id: id } })
+      .then(wiki => {
+        callback(null, wiki);
+      })
+      .catch(err => {
+        callback(err);
+      });
+    } else {
+      Wiki.update({ private: updatedPrivacy, body: updatedWiki }, { where: { id: id } })
+      .then(wiki => {
+        callback(null, wiki);
+      })
+      .catch(err => {
+        callback(err);
+      });
+    }
+    /*return Wiki.findOne({ where: { id } }).then(wiki => {
       if (!wiki) {
         return callback("Wiki not found");
       }
-      /* If privacy is not updated, skip updating the privacy settings. Else, include
-      privacy update */
-      if(updatedPrivacy === null ) {
-        wiki.update(updatedWiki, {
-          fields: Object.keys(updatedWiki)
-        })
-          .then(() => {
-            callback(null, wiki);
-          })
-          .catch(error => {
-            callback(error);
-          });
-      } else {
-        wiki.updateAttributes({ private: updatedPrivacy }).then(wiki => {
-          wiki
-          .update(updatedWiki, {
-            fields: Object.keys(updatedWiki)
-          })
-          .then(() => {
-            console.log("updatedWiki: " + updatedWiki);
-            console.log("wiki.body: " + wiki.body);
-            callback(null, wiki);
-          })
-          .catch(error => {
-            callback(error);
-          });
-        });
-      }
-    });
-  },
-  massPrivateToPublic() {
-    Wiki.findAll() // find all private wikis? 
+    });*/
   },
   deleteWiki(req, callback) {
     return Wiki.findById(req.params.id).then(wiki => {

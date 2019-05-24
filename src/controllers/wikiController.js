@@ -1,4 +1,7 @@
 const wikiQueries = require("../db/queries.wikis.js");
+const marked = require("marked");
+const TurndownService = require("turndown");
+const turndownService = new TurndownService();
 const Wiki = require("../db/models").Wiki;
 
 module.exports = {
@@ -23,7 +26,7 @@ module.exports = {
     /* Create an object with the form information */
     let newWiki = {
       title: req.body.title,
-      body: req.body.body,
+      body: marked(req.body.body),
       private: false,
       userId: req.user.id
     };
@@ -59,15 +62,20 @@ module.exports = {
         if (error || wiki == null) {
           res.redirect(404, "/");
         } else {
+          wiki.body = turndownService.turndown(wiki.body);
           res.render("wikis/edit", { wiki });
         }
       });
     }
   },
   update(req, res, next) {
+    console.log("before markdown converted to html");
+    let body = marked(req.body.body);
+    console.log("after markdown to html conversion");
+
     if(req.body.public) {
       let updatedPrivacy = false;
-      wikiQueries.updateWiki(req.params.id, req.body, updatedPrivacy, (error, wiki) => {
+      wikiQueries.updateWiki(req.params.id, body, updatedPrivacy, (error, wiki) => {
         if(error || wiki == null) {
           console.log("Your error: " + error);
           res.redirect(401, `/publicWikis/${req.params.id}/edit`);
@@ -77,7 +85,7 @@ module.exports = {
       });
     } else if(req.body.private) {
       let updatedPrivacy = true;
-      wikiQueries.updateWiki(req.params.id, req.body, updatedPrivacy, (error, wiki) => {
+      wikiQueries.updateWiki(req.params.id, body, updatedPrivacy, (error, wiki) => {
         if(error || wiki == null) {
           console.log("Your error: " + error);
           res.redirect(401, `/publicWikis/${req.params.id}/edit`);
@@ -87,7 +95,7 @@ module.exports = {
       });
     } else {
       let updatedPrivacy = null;
-      wikiQueries.updateWiki(req.params.id, req.body, updatedPrivacy, (error, wiki) => {
+      wikiQueries.updateWiki(req.params.id, body, updatedPrivacy, (error, wiki) => {
         if (error || wiki == null) {
           console.log("Your error: " + error);
           res.redirect(401, `/publicWikis/${req.params.id}/edit`);
