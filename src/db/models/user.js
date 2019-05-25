@@ -33,6 +33,9 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "userId",
       as: "wiki"
     });
+    User.belongsToMany(models.Wiki, {
+      through: "Collaborator"
+    })
   };
   User.prototype.isPremium = function() {
     return this.role === 1;
