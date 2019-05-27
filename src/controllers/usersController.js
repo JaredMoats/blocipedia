@@ -64,6 +64,20 @@ module.exports = {
       });
     }
   },
+  showCollaboration(req, res, next) {
+    if(!req.user) {
+      res.render("wikis/notUser");
+    } else {
+      userQueries.getUserCollaborations(req.params.id, (err, wikis) => {
+        if(err || wikis == null) {
+          console.log("This is your error: " + err);
+          res.redirect("/");
+        } else {
+          res.render("users/collaborate.ejs", { wikis })
+        }
+      })
+    }
+  },
   upgradeView(req, res, next) {
     if (!req.user) {
       res.render("wikis/notUser");

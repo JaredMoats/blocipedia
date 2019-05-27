@@ -11,6 +11,7 @@ router.get("/users/upgrade/success", usersController.upgradeSuccess);
 router.get("/users/downgrade", usersController.downgradeView);
 router.get("/users/downgrade/success", usersController.downgradeSuccessView);
 router.get("/users/:id/profile", usersController.showProfile);
+router.get("/users/:id/collaborate", usersController.showCollaboration);
 router.post(
   "/users/sign-up/create",
   validation.validateUsers,

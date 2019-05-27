@@ -3,6 +3,7 @@ const marked = require("marked");
 const TurndownService = require("turndown");
 const turndownService = new TurndownService();
 const Wiki = require("../db/models").Wiki;
+const Collaborator = require("../db/models").Collaborator;
 
 module.exports = {
   /* Show all the wikis in the database */
@@ -123,5 +124,31 @@ module.exports = {
         res.redirect(303, `/`);
       }
     });
+  },
+  addCollaborator(req, res, next) {
+    wikiQueries.addCollaborator(req, (error, user) => {
+      if(error) {
+        console.log("There was an error: " + error);
+        res.redirect("/");
+      } else {
+        res.redirect("/publicWikis/add-collaborator/success");
+      }
+    })
+  },
+  removeCollaborator(req, res, next) {
+    wikiQueries.removeCollaborator(req, (error, user) => {
+      if(error) {
+        console.log("There was an error: " + error);
+        res.redirect("/");
+      } else {
+        res.redirect("/publicWikis/remove-collaborator/success");
+      }
+    });
+  },
+  collaboratorSuccess(req, res, next) {
+    res.render("wikis/addCollaboratorSuccess");
+  },
+  removeCollaboratorSuccess(req, res, next) {
+    res.render("wikis/removeCollaboratorSuccess");
   }
-};
+}

@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const keys = require("../config/keys");
 const stripe = require("stripe")(keys.stripeKey);
 const Wiki = require("./models").Wiki;
+const Collaborator = require("./models").Collaborator;
 
 module.exports = {
   createUser(newUser, callback) {
@@ -43,10 +44,23 @@ module.exports = {
     })
   },
   getUsersWikis(id, callback) {
-    return Wiki.findAll({
+    return Wiki.all({
       where: {
         userId: id
       }
+    }).then(wikis => {
+      callback(null, wikis);
+    }).catch(err => {
+      callback(err);
+    });
+  },
+  getUserCollaborations(id, callback) {
+    return Wiki.all({
+      include: [{
+        model: Collaborator,
+        as: "collaborators",
+        where: { userId: id }
+      }]
     }).then(wikis => {
       callback(null, wikis);
     }).catch(err => {

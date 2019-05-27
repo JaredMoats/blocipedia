@@ -1,4 +1,6 @@
 const Wiki = require("./models").Wiki;
+const User = require("./models").User;
+const Collaborator = require("./models").Collaborator;
 const markdown = require("markdown").markdown;
 
 module.exports = {
@@ -76,5 +78,45 @@ module.exports = {
           callback(error);
         });
     });
+  },
+  addCollaborator(req, callback) {
+    User.findOne({
+      where: {
+        email: req.body.collaborator
+      }
+    }).then(user => {
+      if(!user) {
+        console.log("User not found");
+        callback("Error", "User not found");
+      }
+      Collaborator.create({
+        wikiId: req.params.id,
+        userId: user.id
+      })
+    }).then(collaborator => {
+      callback(null, collaborator);
+    }).catch(err => {
+      callback(err, null);
+    });
+  },
+  removeCollaborator(req, callback) {
+    User.findOne({
+      where: {
+        email: req.body.collaborator
+      }
+    }).then(user => {
+      if(!user){
+        console.log("User doesn't exist");
+        callback("Error", "User doesn't exist");
+      }
+      Collaborator.destroy({
+        where: {
+          wikiId: req.params.id,
+          userId: user.id
+        }
+      }).catch(error => {
+        callback(error);
+      })
+    })
   }
 };
